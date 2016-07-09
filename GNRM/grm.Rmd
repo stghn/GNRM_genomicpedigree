@@ -1,0 +1,253 @@
+---
+title: "Computing Genomic Relationships according to VanRaden PM (2008)"
+author: 'Solomon Antwi Boison (BOKU university)'
+date: '2014-09-10'
+output:
+  html_document:
+    number_sections: yes
+  pdf_document: default
+  word_document: default
+---
+\
+\
+see: _VanRaden PM (2008): Efficient methods to compute genomic predictions. Journal of Dairy Sci., 91:4414-4423_
+\
+
+G was computed as
+\[
+G = \frac{Z Z'}{ 2 \sum pi(1-pi)}
+\]
+
+\
+Z was computed as 
+\[
+ Z = M - P 
+\]
+
+\
+where **M** genotype matrix of gene-content _(0/1/2)_. it was **0** if the genotype of an individual for SNP _i_ was homozygous **11**, was **1** if heterozygous **(12, or 21)**, or **2** if the genotype was homozygous **22**.
+where **P** is a matrix containing the 2 _x_ the frequency of the second allele for SNP _i_ (i.e.   _2pi_ ).
+_Allele frequencies are computed from the data_.
+
+
+\
+**Description of the R-function**
+\
+Rscript (`vanRaden_G.R`) contains the code for the computation of pairwise Genomic relationship according to VanRaden P. (2008). when the script is sourced, the function name is `GRM_vanRaden`.
+\
+The function argument are given in detail below. Please try and go through the information below which tries to provide comprehensive explanations.
+
+\
+\
+After sourcing the Rscript (vanRaden_G.R), **GRM** can be computed with the following R-function.
+` GRM_vanRaden(genofile, genoformat, outputformat, outputname, nIID, missinggeno, plots) `.
+\
+
+**_important NOTE_**:
+\
+1. that only numeric allele codings are allowed (alleles -- 11/12/22 or genotypes -- 0/1/2).
+\
+2. missing genotypes are allowed ( however code missing genotypes as NA. adhoc imputations is done by replacing missing values with the column mean).
+\
+
+\
+**++++++++++++++++++++   argument    ++++++++++++++++++++++++**:
+\
+1. _genofile_       ===  Name of the genotype file: it can be an "external file" or "R-object"
+\
+2. _genoformat_     ===  genotype file format. four (4) format types are allowed (**ped,genotypes,Robj_ped,Robj_genotypes**)
+\
+3. _outputformat_   ===  three (3) output format types are allowed (**ASREML,dense,matrix**)
+\
+4. _outputname_     === output name of final file. This will be the text file outputted to your current directory
+\
+5. _nIID_           === number of animals in dataset, slightly higher value increase speed of reading genotype data
+\
+6. _missinggeno_    === **TRUE/T** or **FALSE/F** if there are missing genotypes, missing genotype should be NA
+7. _plots_          === **TRUE/T** or **FALSE/F**
+\
+
+\
+**Some specific explanation of Argument 2 and 3**
+\
+_Explanation for argument 2_
+\
+genoformat allows for different file format to be specified
+\
+1  **ped**   ----- PLINK ped file format, or linkage file format see PLINK.
+\
+    format:   FamID ID sire dam sex pheno SNP1_allele1 SNP1_allele2 SNP2_allele1 SNP2_allele2 .........
+\
+2. **genotypes**
+\
+    format:   FamID ID sire dam sex pheno SNP1 SNP2 .........
+\
+
+3 & 4.  **Robj_ped** or **Robj_genotypes**
+\
+These are R-object, for example if you already have imported the dataset in R. Depending on the format, if it an R-object in **ped** style the use **Robj_ped**, else use **Robj_genotypes**.
+\
+    format: **Robj_ped**  -- ID SNP1_allele1 SNP1_allele2 SNP2_allele1 SNP2_allele2 .....
+    \
+    format: **Robj_genotypes**  -- ID SNP1 SNP2 .........
+    \
+
+\
+\
+**Explanation for argument 3**:
+\
+Three (3) output format are allowed.
+\
+1. **ASREML** == ASREML for a relationship matrix (free flow format, only the diagonal element and the lower triangle is present) --- fast to export ---
+\
+2. **dense**  == free flow format with all pairwise relationship present --- slow to export ---
+\
+3. **matrix** == pairwise relationship in a matrix format. --- faster to export ---
+\
+
+\
+Sequential explanation of how to implement vanRaden formulae in R
+```{r,echo=TRUE}
+# read in a genotype file (only genotypes and are coded as 0,1,2)
+M <- read.table("example/ex_1k.genotype")[,-c(1:6)]  # first six non-important columns deleted
+
+# calculate allele frequency of the second allele (i.e. allele frequency of genotype coded as 2)
+  #simple example for just 1 SNP with 5 genotype animals
+  SNP1 <- matrix(c(0,1,1,2,2))  ##eqivalent to *AA,AB,AB,BB,BB*
+  #allele frequency of p (i.e. allele 2); sum the values in SNP1 divided by 2*nrow(SNP1)
+  # this expression is equivalent to taking the mean of the column and dividing it by 2
+  p=mean(SNP1)/2;  q=1-p
+
+# calculate 'p' and 'q' for the geno data
+p=(apply(M,2,mean))/2;   q=1-p;    pt2=2*p;
+#subtract 2*p from M
+Z=t(apply(M,1,function(x) x-pt2))
+# calculate scaler K
+K <- 2*sum(p*q)
+# compute G
+G <- (Z %*% t(Z))/K
+```
+\
+\
+
+Optimise way to implement vanRaden formulae in R
+```{r,echo=TRUE}
+# read in a genotype file (only genotypes and are coded as 0,1,2)
+M <- read.table("example/ex_1k.genotype")[,-c(1:6)] # first six non-important columns deleted
+M <- scale(x=M,center=T,scale=F)
+K<-sum(apply(X=M,FUN=var,MARGIN=2))
+G <- tcrossprod(M)/K
+```
+
+\
+Now let look at the comprehensive script provided
+source the Rscript 
+\
+```{r}
+# Set working directory to the correct path
+# soucre the file
+source("vanRaden_G.R")
+```
+\
+\
+**Let use the script to try out some examples**
+**_for example 1_**: 
+\
+computing GRM using PLINK - PED file format as input marker data \
+output GRM format is '_matrix_' type and '_ASREML_' \
+\
+```{r, echo=TRUE }
+# Matrix format
+
+ex1_G <- GRM_vanRaden(genofile="example/ex_1k.ped",genoformat="ped",outputformat="matrix",outputname="ex1_matrix",nIID=300,missinggeno=F,plots=T)
+
+#ASREML
+#ex1_G <- GRM_vanRaden(genofile="example/ex_1k.ped",genoformat="ped",outputformat="ASREML",outputname="ex1_asreml",nIID=300,missinggeno=F,plots=T)
+
+# You can try the 5k and 23k dataset
+# calcG <- GRM_vanRaden(genofile="example/ex_5k.ped",genoformat="ped",outputformat="matrix",outputname="ex1_5k_matrix",nIID=300,missinggeno=F,plots=T)
+
+#calcG <- GRM_vanRaden(genofile="example/ex_23k.ped",genoformat="ped",outputformat="matrix",outputname="ex1_23k_matrix",nIID=300,missinggeno=F,plots=T)
+```
+
+\
+**_for example 2_**:
+\
+computing GRM using PLINK - genotype file format as input marker data \
+output GRM format is '_matrix_' type \
+\
+```{r,echo=TRUE}
+ex2_G <- GRM_vanRaden(genofile="example/ex_1k.genotype",genoformat="genotypes",
+                      outputformat="matrix",outputname="ex2_matrix",nIID=300,missinggeno=F,plots=TRUE)
+```
+
+
+\
+**_for example 3_**:
+\
+computing GRM using **R-object in ped format** as input marker data \
+output GRM format is '_matrix_' type \
+\
+
+```{r, echo=TRUE}
+# readin genotype file in R, delete redundent columns except ID and specify this file for function
+geno <- read.table("example/ex_1k.ped")[,-c(1,3:6)]  
+ex3_G <- GRM_vanRaden(genofile="geno",genoformat="Robj_ped",outputformat="matrix",outputname="ex3_matrix",nIID=300,missinggeno=F,plots=TRUE)
+
+```
+
+\
+**_for example 4_**: \
+computing GRM using **R-object in genotype format** as input marker data \
+output GRM format is '_matrix_' type \
+\
+```{r,echo=TRUE}
+
+geno <- read.table("example/ex_1k.genotype")[,-c(1,3:6)]
+ex4_G <- GRM_vanRaden(genofile="geno",genoformat="Robj_genotypes",outputformat="matrix",outputname="ex4_asreml",nIID=300,missinggeno=F,plots=TRUE)
+
+```
+
+\
+Note that all the G are the same.
+\
+
+Eigen value decomposition of G can be obtained and plots made using the `eigen function` on **G**
+\
+heatmap of G can also be created
+\
+```{r,echo=TRUE}
+eigen_G <- eigen(ex1_G)
+pca_G <- eigen_G$vectors
+pervarPCA <- round((eigen_G$values/sum(eigen_G$values))*100,3)
+plot(x=pca_G[,1],y=pca_G[,2],pch=20,col="darkblue",
+     xlab=c(paste("PCA 1 - (",pervarPCA[1],"%)",sep="")),
+     ylab=c(paste("PCA 2 - (",pervarPCA[2],"%)",sep="")))
+
+heatmap(ex1_G,labRow=F,labCol=F,keep.dendro=T)
+```
+
+
+\
+**Example with larger and combined multi-breed as well as crossbred population**
+_GRM will be computed and PCA's will be created_
+computing might take some time
+computing GRM using **genotype format** as input marker data \
+output GRM format is '_matrix_' type \
+
+\
+```{r,echo=TRUE}
+#ex5MBCB_G <- GRM_vanRaden(genofile="example/ex_diffPOP.genotypes",genoformat="genotypes",outputformat="matrix",outputname="ex4_asreml",nIID=4000,missinggeno=F,plots=TRUE)
+
+#eigen_G <- eigen(ex5MBCB_G)
+#pca_G <- eigen_G$vectors
+#pervarPCA <- round((eigen_G$values/sum(eigen_G$values))*100,3)
+#plot(x=pca_G[,1],y=pca_G[,2],pch=20,col="darkblue",
+#     xlab=c(paste("PCA 1 - (",pervarPCA[1],"%)",sep="")),
+#     ylab=c(paste("PCA 2 - (",pervarPCA[2],"%)",sep="")))
+
+```
+
+\[
+please \report \bugs \to \soloboan@yahoo.com
+\]
