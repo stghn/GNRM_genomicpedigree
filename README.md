@@ -2,14 +2,10 @@
 #### Computing Genomic Relationships according to VanRaden PM (2008)
 
 G was computed as  
-\[
 G = \frac{Z Z'}{ 2 \sum pi(1-pi)}  
-\]
 
 Z was computed as  
-\[
  Z = M - P  
-\]
 
 where **M** genotype matrix of gene-content _(0/1/2)_.  
 it was **0** if the genotype of an individual for SNP _i_ was homozygous **11**, was **1** if heterozygous **(12, or 21)**, or **2** if the genotype was homozygous **22**.  
@@ -58,7 +54,7 @@ After sourcing the Rscript (GNRM.R), **GRM** can be computed with the following 
 3. **genotypes** -- SNPs are coded in genotype format (0,1,2); representing AA/AB/BB or 11/12/22  
   format:   FamID ID sire dam sex pheno SNP1 SNP2 ...  
 
-4. && 5. **Robj_ped** or **Robj_genotypes** -- These are R-object, for example if you already have imported the dataset in R.  
+4. & 5. **Robj_ped** or **Robj_genotypes** -- These are R-object, for example if you already have imported the dataset in R.  
 Depending on the format, if it an R-object in **ped** style the use **Robj_ped**, else use **Robj_genotypes**.  
   format: **Robj_ped**  -- ID SNP1_allele1 SNP1_allele2 SNP2_allele1 SNP2_allele2 ...  
   format: **Robj_genotypes**  -- ID SNP1 SNP2 ...  
@@ -88,11 +84,12 @@ These methods are based on vanRaden (2008) and Forni et al. (2011). The main dif
 * Sequential explanation of how to implement vanRaden (2008) in R  
 ##### read in a genotype file (only genotypes and are coded as 0,1,2)
 M <- read.table("example/ex_1k.genotype")[,-c(1:6)]  
- # first six non-important columns deleted  
+  # first six non-important columns deleted  
 
 ##### calculate allele frequency of the second allele (i.e. allele frequency of genotype coded as 2)
 ###### simple example for just 1 SNP with 5 genotype animals
-SNP1 <- matrix(c(0,1,1,2,2))  ##eqivalent to *AA,AB,AB,BB,BB*  
+SNP1 <- matrix(c(0,1,1,2,2))  
+  # eqivalent to *AA,AB,AB,BB,BB*  
   # allele frequency of p (i.e. allele 2); sum the values in SNP1 divided by 2*nrow(SNP1)  
   # this expression is equivalent to taking the mean of the column and dividing it by 2  
 
@@ -117,49 +114,50 @@ G <- (Z %*% t(Z))/K
 ##### Optimise way to implement vanRaden formulae in R
 
 ###### read in a genotype file (only genotypes and are coded as 0,1,2)
-M <- read.table("example/ex_1k.genotype")[,-c(1:6)] # first six non-important columns deleted  
+M <- read.table("example/ex_1k.genotype")[,-c(1:6)] 
+  # first six non-important columns deleted  
 M <- scale(x=M,center=T,scale=F)  
 K<-sum(apply(X=M,FUN=var,MARGIN=2))  
 G <- tcrossprod(M)/K  
 
 
-#### Let use the script to try out some examples
-##### Set working directory to the correct path
+### Let use the script to try out some examples
+#### Set working directory to the correct path
 setwd("~/packages/script_GRM/")  
 
-##### soucre the file
+### soucre the file
 source("GNRM.R")  
 library("QTLRel")  
 
-**_for example 1_**:
+### _for example 1_
 computing GRM based using PLINK - PED file format as input marker data  
 output GRM format is '_matrix_' type and '_ASREML_'  
 
 
-##### 1k dataset (output results in matrix format)
-###### ana_type is vanRaden (2008)
+#### 1k dataset (output results in matrix format)
+##### ana_type is vanRaden (2008)
 ex1mat_Gvan <- calc_gnrm(genofile="example/ex_1k.ped",genoformat="ped",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex1mat_1kGvan",nIID=300,missinggeno=F,plots=T)  
 
-##### 1k dataset (output results in ASREML format)
-###### ana_type is vanRaden (2008)
+#### 1k dataset (output results in ASREML format)
+##### ana_type is vanRaden (2008)
 ex1asreml_Gvan <- calc_gnrm(genofile="example/ex_1k.ped",genoformat="ped",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="ASREML",outputname="ex1asreml_1kGvan",nIID=300,missinggeno=F,plots=T)  
 
-##### Try the 5k dataset (output results in matrix format)
-# ana_type is vanRaden (2008) [ vanRaden ] 
+#### Try the 5k dataset (output results in matrix format)
+##### ana_type is vanRaden (2008) [ vanRaden ] 
 ex1mat_Gvan <- calc_gnrm(genofile="example/ex_5k.ped",genoformat="ped",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex1mat_5kGvan",nIID=300,missinggeno=F,plots=T)  
 
 
-###### Example for using other ana_type (grm options)
-# ana_type is Forni et al. (2011) [ Forni_MAF ] 
-# output as Matrix format
+#### Example for using other ana_type (grm options)
+##### ana_type is Forni et al. (2011) [ Forni_MAF ] 
+##### output as Matrix format
 ex1_GforniMAF <- calc_gnrm(genofile="example/ex_5k.ped",genoformat="ped",ana_type="Forni_MAF",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex1mat_5kGforniMAF",nIID=300,missinggeno=F,plots=T)  
 
-# ana_type is Forni et al. (2011) [ Forni_GN ]
-# output as Matrix format
+  # ana_type is Forni et al. (2011) [ Forni_GN ]
+  # output as Matrix format
 ex1mat_GforniGN <- calc_gnrm(genofile="example/ex_5k.ped",genoformat="ped",ana_type="Forni_GN",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex1mat_5kGforniGN",nIID=300,missinggeno=F,plots=T)  
 
 
-**_for example 2_**:  
+###_for example 2_**:  
 computing Genomic relationship and Pedigree relationship using PLINK - PED file format as input marker data output GRM formats _ASREML_  
 
 ###### based on vanRaden (2008) with allele frequency computed from the data 
