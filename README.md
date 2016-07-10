@@ -67,31 +67,31 @@ These methods are based on vanRaden (2008) and Forni et al. (2011). The main dif
 2. **vanRaden_SAF** -- allele frequency for centering and scaling genotypes are `supplied by the user`. Note that you are responsible for making sure the list of allele frequencies correspond to the columns in the data file. When  **vanRaden_SAF** is used, supply allele frequency with the argument `AFREQ`.  
 3. **Forni_0.5** -- allele frequency for centering and scaling genotypes are `assumed to be 0.5 for all loci`.  
 4. **Forni_MAF** -- allele frequency for centering and scaling genotypes are `assumed to be average minor allele frequency for all loci`. The function first compute the minor allele frequency for each loci and takes the average and uses it for centering and scaling genotypes  
-5. **Forni_GN** ==  allele frequency for centering and scaling genotypes are `computed from the data for each loci`. however, scaling of the genotypes are based on the trace of the `ZZ'` matrix divided by the number of genotypes individuals. read Forni et al. (2011) for more details
+5. **Forni_GN** -- allele frequency for centering and scaling genotypes are `computed from the data for each loci`. however, scaling of the genotypes are based on the trace of the `ZZ'` matrix divided by the number of genotypes individuals. read Forni et al. (2011) for more details
 
 
 * Explanation for argument 4 and 5 [_ped_data_ , _ped_option_] : Pedigree relationships can also be computed when the user supplies a pedigree file.  
-**_ped_data_** == the user can supply a  pedigree file with three (3) columns only (id, sire, dam). Columns HEADERS are not allowed.  
-**_ped_option_** == This argument is compulsory. The user has to supply a T (TRUE) or F (FALSE) argument for the script to work.  
+**_ped_data_** -- the user can supply a  pedigree file with three (3) columns only (id, sire, dam). Columns HEADERS are not allowed.  
+**_ped_option_** -- This argument is compulsory. The user has to supply a T (TRUE) or F (FALSE) argument for the script to work.  
 
 
 * Explanation for argument 7 [_outputformat_] : Three (3) output format are allowed.  
-1. **ASREML** == ASREML for a relationship matrix (free flow format, only the diagonal element and the lower triangle is present) - fast to export  
-2. **dense**  == free flow format with all pairwise relationship present - slow to export  
-3. **matrix** == pairwise relationship in a matrix format. - faster to export  
+1. **ASREML** -- ASREML for a relationship matrix (free flow format, only the diagonal element and the lower triangle is present) - fast to export  
+2. **dense**  -- free flow format with all pairwise relationship present - slow to export  
+3. **matrix** -- pairwise relationship in a matrix format. - faster to export  
 
 
 * Sequential explanation of how to implement vanRaden (2008) in R  
 ##### read in a genotype file (only genotypes and are coded as 0,1,2)
 M <- read.table("example/ex_1k.genotype")[,-c(1:6)]  
-  # first six non-important columns deleted  
+###### first six non-important columns deleted  
 
-##### calculate allele frequency of the second allele (i.e. allele frequency of genotype coded as 2)
-###### simple example for just 1 SNP with 5 genotype animals
+#### calculate allele frequency of the second allele (i.e. allele frequency of genotype coded as 2)
+##### simple example for just 1 SNP with 5 genotype animals
 SNP1 <- matrix(c(0,1,1,2,2))  
-  # eqivalent to *AA,AB,AB,BB,BB*  
-  # allele frequency of p (i.e. allele 2); sum the values in SNP1 divided by 2*nrow(SNP1)  
-  # this expression is equivalent to taking the mean of the column and dividing it by 2  
+###### eqivalent to *AA,AB,AB,BB,BB*  
+###### allele frequency of p (i.e. allele 2); sum the values in SNP1 divided by 2*nrow(SNP1)  
+###### this expression is equivalent to taking the mean of the column and dividing it by 2  
 
 p <- mean(SNP1)/2  
 q <- 1-p  
@@ -113,23 +113,23 @@ G <- (Z %*% t(Z))/K
 
 ##### Optimise way to implement vanRaden formulae in R
 
-###### read in a genotype file (only genotypes and are coded as 0,1,2)
+##### read in a genotype file (only genotypes and are coded as 0,1,2)
 M <- read.table("example/ex_1k.genotype")[,-c(1:6)] 
-  # first six non-important columns deleted  
+###### first six non-important columns deleted  
 M <- scale(x=M,center=T,scale=F)  
 K<-sum(apply(X=M,FUN=var,MARGIN=2))  
 G <- tcrossprod(M)/K  
 
 
-### Let use the script to try out some examples
-#### Set working directory to the correct path
+#### Let use the script to try out some examples
+##### Set working directory to the correct path
 setwd("~/packages/script_GRM/")  
 
-### soucre the file
+#### soucre the file
 source("GNRM.R")  
 library("QTLRel")  
 
-### _for example 1_
+** _for example 1_**
 computing GRM based using PLINK - PED file format as input marker data  
 output GRM format is '_matrix_' type and '_ASREML_'  
 
@@ -157,7 +157,7 @@ ex1_GforniMAF <- calc_gnrm(genofile="example/ex_5k.ped",genoformat="ped",ana_typ
 ex1mat_GforniGN <- calc_gnrm(genofile="example/ex_5k.ped",genoformat="ped",ana_type="Forni_GN",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex1mat_5kGforniGN",nIID=300,missinggeno=F,plots=T)  
 
 
-###_for example 2_**:  
+**_for example 2_**:  
 computing Genomic relationship and Pedigree relationship using PLINK - PED file format as input marker data output GRM formats _ASREML_  
 
 ###### based on vanRaden (2008) with allele frequency computed from the data 
