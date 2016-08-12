@@ -181,49 +181,34 @@ computing Genomic relationship and Pedigree relationship with user supplied alle
 `ex2asreml_GNRMvanSAF <- calc_gnrm(genofile="example/ex_5k.ped",genoformat="ped",ana_type="vanRaden_SAF",AFREQ="example/freq_5k.txt",ped_data="example/dPedigree.txt",ped_option=T,outputformat="ASREML",outputname="ex2asreml_5kGNRMvanSAF",nIID=300,missinggeno=F,plots=T)`  
 
 
-**_for example 3_**:  
-computing GRM using genotype file format as input marker data output GRM format is '_matrix_' type  
+**_for example 3_ (A)**:  
+computing GRM using **R-object in ped format** as input marker data
+ - using R-object - genoformat="Robj_ped"
+ - 5k dataset (output results in _natrix_ format)
+ - ana_type is Forni et al. (2011) [ Forni_0.5 ]
+Steps: reading genotype file in R,  and delete redundent columns except ID and specify this file for the function  
 
-##### ana_type is vanRaden (2008) [ vanRaden ] 
-##### output as Matrix format  
-`ex3mat_Gvan <- calc_gnrm(genofile="example/ex_1k.genotype",genoformat="genotypes",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex3asreml_1kGvan",nIID=300,missinggeno=F,plots=T)  
+`geno <- read.table("example/ex_5k.ped")[,-c(1,3:6)]`  
+`ex3mat_Gforni <- calc_gnrm(genofile="geno",genoformat="Robj_ped",ana_type="Forni_0.5",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex3mat_5kGforni",nIID=300,missinggeno=F,plots=T)`  
 
-##### ana_type is Forni et al. (2011) [ Forni_0.5 ]  
-##### output as Matrix format  
-`ex3mat_Gforni <- calc_gnrm(genofile="example/ex_1k.genotype",genoformat="genotypes",ana_type="Forni_0.5",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex3mat_1kGforni",nIID=300,missinggeno=F,plots=T)  
+**_for example 3_ (B)**:  
+computing GRM using **R-object in genotype format** as input marker data
+ - using R-object - genoformat="Robj_genotypes"
+ - 1k dataset (output results in _ASREML_ format)
+ - ana_type is vanRaden (2008) [ vanRaden ]
+Steps: reading genotype file in R,  and delete redundent columns except ID and specify this file for the function  
 
-
-**_for example 4_**:  
-computing GRM using **R-object in ped format** as input marker data or using **R-object in genotype format** as input marker data output GRM format is '_matrix_' type  
-
-##### R-object in ped format  
-###### reading genotype file in R,  
-###### delete redundent columns except ID and specify this file for function  
-`geno <- read.table("example/ex_5k.ped")[,-c(1,3:6)]  
-
-##### ana_type is Forni et al. (2011) [ Forni_0.5 ] 
-##### output as Matrix format  
-`ex4mat_Gforni <- calc_gnrm(genofile="geno",genoformat="Robj_ped",ana_type="Forni_0.5",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex4mat_5kGforni",nIID=300,missinggeno=F,plots=T)  
-
-
-##### **R-object genotype format**  
-##### reading genotype file in R, 
-##### delete redundent columns except ID and specify this file for function  
-`geno <- read.table("example/ex_1k.genotype")[,-c(1,3:6)]  
-
-##### ana_type is vanRaden (2008) [ vanRaden ] 
-##### output as ASREML format  
-ex4asreml_Gvan <- calc_gnrm(genofile="geno",genoformat="Robj_genotypes",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="ASREML",outputname="ex4asreml_1kGvan",nIID=300,missinggeno=F,plots=TRUE)  
+`ex3asreml_Gvan <- calc_gnrm(genofile="geno",genoformat="Robj_genotypes",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="ASREML",outputname="ex3asreml_1kGvan",nIID=300,missinggeno=F,plots=TRUE)`  
 
 
 Eigen value decomposition of G can be obtained and plots made using the `eigen function` on **G**  
 Heatmap of G can also be created  
 
-eigen_G <- eigen(ex1mat_Gvan)  
-pca_G <- eigen_G$vectors  
-pervarPCA <- round((eigen_G$values/sum(eigen_G$values))*100,3)  
-plot(x=pca_G[,1],y=pca_G[,2],pch=20,col="darkblue",xlab=c(paste("PCA 1 - (",pervarPCA[1],"%)",sep="")), ylab=c(paste("PCA 2 - (",pervarPCA[2],"%)",sep="")))  
-heatmap(ex1mat_Gvan,labRow=F,labCol=F,keep.dendro=T)  
+`eigen_G <- eigen(ex1mat_Gvan)`  
+`pca_G <- eigen_G$vectors`  
+`pervarPCA <- round((eigen_G$values/sum(eigen_G$values))*100,3)`  
+`plot(x=pca_G[,1],y=pca_G[,2],pch=20,col="darkblue",xlab=c(paste("PCA 1 - (",pervarPCA[1],"%)",sep="")), ylab=c(paste("PCA 2 - (",pervarPCA[2],"%)",sep="")))`  
+`heatmap(ex1mat_Gvan,labRow=F,labCol=F,keep.dendro=T)`  
 
 
 **Example with larger and combined multi-breed as well as crossbred population**
