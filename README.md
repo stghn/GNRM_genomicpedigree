@@ -25,7 +25,7 @@ The function argument are given in detail below. Please try and go through the i
 After sourcing the Rscript (GNRM.R), **GRM** can be computed with the following R-function.  
 ` calc_gnrm(genofile, genoformat, ana_type, AFREQ, ped_data, ped_option, outputformat, outputname, missinggeno, nIID, plots) `.
 
-### **_important NOTE_**:  
+## **_important NOTE_**:  
  1. ONLY numeric allele codings are allowed (alleles -- 11/12/22 or genotypes -- 0/1/2).  
  2. missing genotypes are allowed (however code missing genotypes as NA.  
    - adhoc imputations is done by replacing missing values with the column mean).  
@@ -43,42 +43,41 @@ After sourcing the Rscript (GNRM.R), **GRM** can be computed with the following 
 10. _missinggeno_   === (compulsory)... **TRUE/T** or **FALSE/F** if there are missing genotypes, missing genotype should be NA  
 11. _plots_          === (compulsory)...  **TRUE/T** or **FALSE/F**  
 
-**Some specific explanation of Argument 2,3,4,5 and 7**  
+## **Some specific explanation of Argument 2, 3, 4, 5 and 7**  
 * Explanation for argument 2 [_genoformat_] : genoformat allows for different file format to be specified  
-1. **ped** -- PLINK ped file format, or linkage file format see PLINK.  
+    1. **ped** -- PLINK ped file format, or linkage file format see PLINK.  
   format:   FamID ID sire dam sex pheno SNP1_allele1 SNP1_allele2 SNP2_allele1 SNP2_allele2 ...  
 
-2. **tped** -- PLINK tranposed file format, see PLINK for details. when tped format is used, specify the names of the tped file and tfam file (eg c("file.tped","file.tfam"))  
-  format:   CHR SNPname geneticposition physical position sample1_SNP_allele1 sample1_SNP1_allele2 sample2_SNP_allele1 sample1_SNP_allele2 ...  
+    2. **tped** -- PLINK tranposed file format, see PLINK for details. when tped format is used, specify the names of the tped file and tfam file (eg c("file.tped","file.tfam"))  
+        format:   CHR SNPname geneticposition physical position sample1_SNP_allele1 sample1_SNP1_allele2 sample2_SNP_allele1 sample1_SNP_allele2 ...  
 
-3. **genotypes** -- SNPs are coded in genotype format (0,1,2); representing AA/AB/BB or 11/12/22  
-  format:   FamID ID sire dam sex pheno SNP1 SNP2 ...  
+    3. **genotypes** -- SNPs are coded in genotype format (0,1,2); representing AA/AB/BB or 11/12/22  
+        format:   FamID ID sire dam sex pheno SNP1 SNP2 ...  
 
-4. & 5. **Robj_ped** or **Robj_genotypes** -- These are R-object, for example if you already have imported the dataset in R.  
-Depending on the format, if it an R-object in **ped** style the use **Robj_ped**, else use **Robj_genotypes**.  
-  format: **Robj_ped**  -- ID SNP1_allele1 SNP1_allele2 SNP2_allele1 SNP2_allele2 ...  
-  format: **Robj_genotypes**  -- ID SNP1 SNP2 ...  
+    4. & 5. **Robj_ped** or **Robj_genotypes** -- These are R-object, for example if you already have imported the dataset in R. Depending on the format, if it an R-object in **ped** style then use **Robj_ped**, else use **Robj_genotypes**.  
+        format: **Robj_ped**  -- ID SNP1_allele1 SNP1_allele2 SNP2_allele1 SNP2_allele2 ...  
+        format: **Robj_genotypes**  -- ID SNP1 SNP2 ...  
 
 
 * Explanation for argument 3 [_ana_type_] : Five (5) methods in computing genomic relationships are implemented.  
 These methods are based on vanRaden (2008) and Forni et al. (2011). The main differences between the methods are which allele frequencies are used.  
 
-1. **vanRaden** -- allele frequency for centering and scaling genotypes are `computed from the available data for each loci`   
-2. **vanRaden_SAF** -- allele frequency for centering and scaling genotypes are `supplied by the user`. Note that you are responsible for making sure the list of allele frequencies correspond to the columns in the data file. When  **vanRaden_SAF** is used, supply allele frequency with the argument `AFREQ`.  
-3. **Forni_0.5** -- allele frequency for centering and scaling genotypes are `assumed to be 0.5 for all loci`.  
-4. **Forni_MAF** -- allele frequency for centering and scaling genotypes are `assumed to be average minor allele frequency for all loci`. The function first compute the minor allele frequency for each loci and takes the average and uses it for centering and scaling genotypes  
-5. **Forni_GN** -- allele frequency for centering and scaling genotypes are `computed from the data for each loci`. however, scaling of the genotypes are based on the trace of the `ZZ'` matrix divided by the number of genotypes individuals. read Forni et al. (2011) for more details
+    1. **vanRaden** -- allele frequency for centering and scaling genotypes are `computed from the available data for each loci`   
+    2. **vanRaden_SAF** -- allele frequency for centering and scaling genotypes are `supplied by the user`. Note that you are responsible for making sure the list of allele frequencies correspond to the columns in the data file. When  **vanRaden_SAF** is used, supply allele frequency with the argument `AFREQ`.  
+    3. **Forni_0.5** -- allele frequency for centering and scaling genotypes are `assumed to be 0.5 for all loci`.  
+    4. **Forni_MAF** -- allele frequency for centering and scaling genotypes are `assumed to be average minor allele frequency for all loci`. The function first compute the minor allele frequency for each loci and takes the average and uses it for centering and scaling genotypes  
+    5. **Forni_GN** -- allele frequency for centering and scaling genotypes are `computed from the data for each loci`. however, scaling of the genotypes are based on the trace of the `ZZ'` matrix divided by the number of genotypes individuals. read Forni et al. (2011) for more details
 
 
 * Explanation for argument 4 and 5 [_ped_data_ , _ped_option_] : Pedigree relationships can also be computed when the user supplies a pedigree file.  
-**_ped_data_** -- the user can supply a  pedigree file with three (3) columns only (id, sire, dam). Columns HEADERS are not allowed.  
-**_ped_option_** -- This argument is compulsory. The user has to supply a T (TRUE) or F (FALSE) argument for the script to work.  
+    **_ped_data_** -- the user can supply a  pedigree file with three (3) columns only (id, sire, dam). Columns HEADERS are not allowed.  
+    **_ped_option_** -- This argument is compulsory. The user has to supply a T (TRUE) or F (FALSE) argument for the script to work.  
 
 
 * Explanation for argument 7 [_outputformat_] : Three (3) output format are allowed.  
-1. **ASREML** -- ASREML for a relationship matrix (free flow format, only the diagonal element and the lower triangle is present) - fast to export  
-2. **dense**  -- free flow format with all pairwise relationship present - slow to export  
-3. **matrix** -- pairwise relationship in a matrix format. - faster to export  
+    1. **ASREML** -- ASREML for a relationship matrix (free flow format, only the diagonal element and the lower triangle is present) - fast to export  
+    2. **dense**  -- free flow format with all pairwise relationship present - slow to export  
+    3. **matrix** -- pairwise relationship in a matrix format. - faster to export  
 
 
 ## Sequential explanation of how to implement vanRaden (2008) in R  
