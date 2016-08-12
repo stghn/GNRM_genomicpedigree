@@ -10,7 +10,7 @@ Z was computed as
 where **M** genotype matrix of gene-content _(0/1/2)_.  
 it was **0** if the genotype of an individual for SNP _i_ was homozygous **11**, was **1** if heterozygous **(12, or 21)**, or **2** if the genotype was homozygous **22**.  
 where **P** is a matrix containing the 2 _x_ the frequency of the second allele for SNP _i_ (i.e.   _2pi_ ).  
-_Allele frequencies are computed as  
+Allele frequencies are computed as  
  1. _from the data_  
  2. _use supplied_  
  3. _0.5 for all loci_  
@@ -46,18 +46,19 @@ After sourcing the Rscript (GNRM.R), **GRM** can be computed with the following 
 ## **Some specific explanation of Argument 2, 3, 4, 5 and 7**  
 * Explanation for argument 2 [_genoformat_] : genoformat allows for different file format to be specified  
     1. **ped** -- PLINK ped file format, or linkage file format see PLINK.  
-  format:   FamID ID sire dam sex pheno SNP1_allele1 SNP1_allele2 SNP2_allele1 SNP2_allele2 ...  
+        format:   FamID ID sire dam sex pheno SNP1_allele1 SNP1_allele2 SNP2_allele1 SNP2_allele2 ...  
 
     2. **tped** -- PLINK tranposed file format, see PLINK for details. when tped format is used, specify the names of the tped file and tfam file (eg c("file.tped","file.tfam"))  
-        format:   CHR SNPname geneticposition physical position sample1_SNP_allele1 sample1_SNP1_allele2 sample2_SNP_allele1 sample1_SNP_allele2 ...  
+        format:   CHR SNPname geneticposition physical position sample1_SNP_allele1 sample1_SNP1_allele2 sample2_SNP_allele1 sample1_SNP_allele2 ...   
 
     3. **genotypes** -- SNPs are coded in genotype format (0,1,2); representing AA/AB/BB or 11/12/22  
         format:   FamID ID sire dam sex pheno SNP1 SNP2 ...  
 
-    4. & 5. **Robj_ped** or **Robj_genotypes** -- These are R-object, for example if you already have imported the dataset in R. Depending on the format, if it an R-object in **ped** style then use **Robj_ped**, else use **Robj_genotypes**.  
+    4. **Robj_ped** -- R-object, when you already have imported the dataset in R. Depending on the format, if it an R-object in **ped** style then use **Robj_ped** 
         format: **Robj_ped**  -- ID SNP1_allele1 SNP1_allele2 SNP2_allele1 SNP2_allele2 ...  
-        format: **Robj_genotypes**  -- ID SNP1 SNP2 ...  
 
+    5. **Robj_genotypes** -- R-object, when you already have imported the dataset in R. When the format of the R-object is in **genotypes** style then use **Robj_genotypes**.  
+        format: **Robj_genotypes**  -- ID SNP1 SNP2 ...  
 
 * Explanation for argument 3 [_ana_type_] : Five (5) methods in computing genomic relationships are implemented.  
 These methods are based on vanRaden (2008) and Forni et al. (2011). The main differences between the methods are which allele frequencies are used.  
