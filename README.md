@@ -126,27 +126,27 @@ soucre the file
 `source("GNRM.R")`  
 `library("QTLRel")`  
 
-** _for example 1_ (A)**  
+**_for example 1_ (A)**  
  - computing GRM based using PLINK - PED file format as input marker data  
  - 1k dataset (output results in _matrix_ format)  
  - ana_type is vanRaden (2008) [ vanRaden ]   
 
 `ex1mat_Gvan <- calc_gnrm(genofile="example/ex_1k.ped",genoformat="ped",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex1mat_1kGvan",nIID=300,missinggeno=F,plots=T)`  
 
-** _for example 1_ (B)**
+**_for example 1_ (B)**
  - computing GRM based using PLINK - PED file format as input marker data  
  - 1k dataset (output results in _ASREML_ format)  
  - ana_type is vanRaden (2008) [ vanRaden ]   
 `ex1asreml_Gvan <- calc_gnrm(genofile="example/ex_1k.ped",genoformat="ped",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="ASREML",outputname="ex1asreml_1kGvan",nIID=300,missinggeno=F,plots=T)`  
 
-** _for example 1_ (C)**
+**_for example 1_ (C)**
  - computing GRM based using PLINK - PED file format as input marker data  
  - 5k dataset (output results in _matrix_ format)
  - ana_type is vanRaden (2008) [ vanRaden ]   
 
 `ex1mat_Gvan <- calc_gnrm(genofile="example/ex_5k.ped",genoformat="ped",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex1mat_5kGvan",nIID=300,missinggeno=F,plots=T)`  
 
-** _for example 1_ (D)**
+**_for example 1_ (D)**
  - Using other ana_type (grm options) 
  - Genotype are in PLINK - PED file format as input marker data 
  - 5k dataset (output results in _matrix_ format)
@@ -154,7 +154,7 @@ soucre the file
 
 `ex1_GforniMAF <- calc_gnrm(genofile="example/ex_5k.ped",genoformat="ped",ana_type="Forni_MAF",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex1mat_5kGforniMAF",nIID=300,missinggeno=F,plots=T)`  
 
-** _for example 1_ (E)**
+**_for example 1_ (E)**
  - Genotype are in PLINK - PED file format as input marker data 
  - 5k dataset (output results in _matrix_ format)
  - ana_type is Forni et al. (2011) [ Forni_GN ] 
@@ -211,7 +211,7 @@ Heatmap of G can also be created
 `heatmap(ex1mat_Gvan,labRow=F,labCol=F,keep.dendro=T)`  
 
 
-**_for example 4_ **: 
+**_for example 4_**: 
 Example with larger and combined multi-breed as well as crossbred population  
 GRM will be computed and PCA's will be created 
 computing might take some time  
@@ -220,7 +220,7 @@ computing might take some time
  - 5k dataset (output results in _matrix_ format)
  - ana_type is vanRaden (2008) [ vanRaden ]
 
-`ex5mat_Gvan <- calc_gnrm(genofile="example/ex_diffPOP.genotypes",genoformat="genotypes",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex5mat_Gvan",nIID=4000,missinggeno=F,plots=TRUE)`    
+`ex4mat_Gvan <- calc_gnrm(genofile="example/ex_diffPOP.genotypes",genoformat="genotypes",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex4mat_Gvan",nIID=4000,missinggeno=F,plots=TRUE)`    
 `eigen_G <- eigen(ex5_Gvan)`  
 `pca_G <- eigen_G$vectors`  
 `pervarPCA <- round((eigen_G$values/sum(eigen_G$values))*100,3)`  
