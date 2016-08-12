@@ -220,7 +220,7 @@ computing might take some time
  - 5k dataset (output results in _matrix_ format)
  - ana_type is vanRaden (2008) [ vanRaden ]
 
-`ex5mat_Gvan <- calc_gnrm(genofile="example/ex_diffPOP.genotypes",genoformat="genotypes",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex5mat_Gvan",nIID=4000,missinggeno=F,plots=TRUE)  
+`ex5mat_Gvan <- calc_gnrm(genofile="example/ex_diffPOP.genotypes",genoformat="genotypes",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex5mat_Gvan",nIID=4000,missinggeno=F,plots=TRUE)`    
 `eigen_G <- eigen(ex5_Gvan)`  
 `pca_G <- eigen_G$vectors`  
 `pervarPCA <- round((eigen_G$values/sum(eigen_G$values))*100,3)`  
