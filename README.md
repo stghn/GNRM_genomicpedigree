@@ -1,5 +1,5 @@
-### GNRM (genomic and pedigree relationship matrix)
-#### Computing Genomic Relationships according to VanRaden PM (2008)
+# GNRM (genomic and pedigree relationship matrix)
+## Computing Genomic Relationships according to VanRaden PM (2008)
 
 G was computed as  
 G = \frac{Z Z'}{ 2 \sum pi(1-pi)}  
@@ -17,7 +17,7 @@ _Allele frequencies are computed as
  4. _average frequency of the minor allele_  
 
 
-**Description of the R-function**  
+## **Description of the R-function**  
 Rscript (`GNRM.R`) contains the code for the computation of pairwise Genomic relationship according to VanRaden P. (2008) and Forni et al. (2011). Pedigree  relationship as also computed. When the script is sourced, the function name is `calc_gnrm`. For computing pedigree relationship in addition to genomic relationship, you need to install and call the R-pacakge `QTLRel`.  
 
 The function argument are given in detail below. Please try and go through the information to get comprehensive explanations.
@@ -25,7 +25,7 @@ The function argument are given in detail below. Please try and go through the i
 After sourcing the Rscript (GNRM.R), **GRM** can be computed with the following R-function.  
 ` calc_gnrm(genofile, genoformat, ana_type, AFREQ, ped_data, ped_option, outputformat, outputname, missinggeno, nIID, plots) `.
 
-**_important NOTE_**:  
+### **_important NOTE_**:  
  1. ONLY numeric allele codings are allowed (alleles -- 11/12/22 or genotypes -- 0/1/2).  
  2. missing genotypes are allowed (however code missing genotypes as NA.  
    - adhoc imputations is done by replacing missing values with the column mean).  
@@ -81,25 +81,24 @@ These methods are based on vanRaden (2008) and Forni et al. (2011). The main dif
 3. **matrix** -- pairwise relationship in a matrix format. - faster to export  
 
 
-* Sequential explanation of how to implement vanRaden (2008) in R  
-##### read in a genotype file (only genotypes and are coded as 0,1,2)  
-M <- read.table("example/ex_1k.genotype")[,-c(1:6)]  
-###### first six non-important columns deleted  
+## Sequential explanation of how to implement vanRaden (2008) in R  
+read in a genotype file (only genotypes and are coded as 0,1,2)  
+`M <- read.table("example/ex_1k.genotype")[,-c(1:6)]`  
 
-#### calculate allele frequency of the second allele (i.e. allele frequency of genotype coded as 2)  
-##### simple example for just 1 SNP with 5 genotype animals  
-SNP1 <- matrix(c(0,1,1,2,2))  
-###### eqivalent to *AA,AB,AB,BB,BB*  
-###### allele frequency of p (i.e. allele 2); sum the values in SNP1 divided by 2*nrow(SNP1)  
-###### this expression is equivalent to taking the mean of the column and dividing it by 2  
+calculate allele frequency of the second allele (i.e. allele frequency of genotype coded as 2)  
+simple example for just 1 SNP with 5 genotype animals
+Example c(AA, AB, AB, BB, BB)
+allele frequency of p (i.e. allele 2); sum the values in SNP1 divided by 2*nrow(SNP1)  
+This expression is equivalent to taking the mean of the column and dividing it by 2  
 
-p <- mean(SNP1)/2  
-q <- 1-p  
+`SNP1 <- matrix(c(0,1,1,2,2))`  
+`p <- mean(SNP1)/2`   
+`q <- 1-p`   
 
-###### calculate 'p' and 'q' for the geno data  
-p <- (apply(M,2,mean))/2  
-q <- 1-p  
-pt2 <- 2*p  
+calculate 'p' and 'q' for a geno data file using the apply function  
+`p <- (apply(M,2,mean))/2`  
+`q <- 1-p`  
+`pt2 <- 2*p`  
 
 ###### subtract 2*p from M  
 Z <- t(apply(M,1,function(x) x-pt2))  
