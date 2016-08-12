@@ -211,17 +211,20 @@ Heatmap of G can also be created
 `heatmap(ex1mat_Gvan,labRow=F,labCol=F,keep.dendro=T)`  
 
 
-**Example with larger and combined multi-breed as well as crossbred population**
-_GRM will be computed and PCA's will be created_ 
+**_for example 4_ **: 
+Example with larger and combined multi-breed as well as crossbred population  
+GRM will be computed and PCA's will be created 
 computing might take some time  
-computing GRM using **genotype format** as input marker data  
-output GRM format is '_matrix_' type  
 
-ex5mat_Gvan <- calc_gnrm(genofile="example/ex_diffPOP.genotypes",genoformat="genotypes",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex5mat_Gvan",nIID=4000,missinggeno=F,plots=TRUE)  
-eigen_G <- eigen(ex5_Gvan)  
-pca_G <- eigen_G$vectors  
-pervarPCA <- round((eigen_G$values/sum(eigen_G$values))*100,3)  
-plot(x=pca_G[,1], y=pca_G[,2], pch=20, col="darkblue", xlab=c(paste("PCA 1 - (",pervarPCA[1],"%)",sep="")), ylab=c(paste("PCA 2 - (",pervarPCA[2],"%)",sep="")))  
+ - marker data in **genotype format** file format as input  
+ - 5k dataset (output results in _matrix_ format)
+ - ana_type is vanRaden (2008) [ vanRaden ]
+
+`ex5mat_Gvan <- calc_gnrm(genofile="example/ex_diffPOP.genotypes",genoformat="genotypes",ana_type="vanRaden",AFREQ="",ped_data="",ped_option=F,outputformat="matrix",outputname="ex5mat_Gvan",nIID=4000,missinggeno=F,plots=TRUE)  
+`eigen_G <- eigen(ex5_Gvan)`  
+`pca_G <- eigen_G$vectors`  
+`pervarPCA <- round((eigen_G$values/sum(eigen_G$values))*100,3)`  
+`plot(x=pca_G[,1], y=pca_G[,2], pch=20, col="darkblue", xlab=c(paste("PCA 1 - (",pervarPCA[1],"%)",sep="")), ylab=c(paste("PCA 2 - (",pervarPCA[2],"%)",sep="")))`  
 
 **please report bugs to soloboan@yahoo.com**
 
