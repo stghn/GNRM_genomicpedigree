@@ -37,7 +37,7 @@ After sourcing the Rscript (GNRM.R), **GRM** can be computed with the following 
 4. _AFREQ_          === (optional)... Name of a file containing all frequency (This is only used when _ana_type_ = **vanRaden_SAF**), use empty string "" to represent non-use  
 5. _ped_data_       === (optional)... Name of file with pedigree information (ID, Sire, Dam). No headers allowed. it is an optional argument use empty string "" to represent non-use  
 6. _ped_option_     === (compulsory)... specify **T (TRUE)** or **F (FALSE)**. when pedigree information is NOT available use F(FALSE)  
-7. _outputformat_   ===  (compulsory)... three (3) output format types are allowed (**ASREML,dense,matrix**)  
+7. _outputformat_   ===  (compulsory)... two (2) output format types are allowed (**ASREML,matrix**)  
 8. _outputname_     === (compulsory)... output name of final file. This will be the text file outputted to your current directory  
 9. _nIID_           === (compulsory)... number of animals in dataset, slightly higher value increase speed of reading genotype data  
 10. _missinggeno_   === (compulsory)... **TRUE/T** or **FALSE/F** if there are missing genotypes, missing genotype should be NA  
@@ -75,10 +75,9 @@ These methods are based on vanRaden (2008) and Forni et al. (2011). The main dif
     2. **_ped_option_** -- This argument is compulsory. The user has to supply a T (TRUE) or F (FALSE) argument for the script to work.  
 
 
-* Explanation for argument 7 [_outputformat_] : Three (3) output format are allowed.  
+* Explanation for argument 7 [_outputformat_] : Two (2) output format are allowed.  
     1. **ASREML** -- ASREML for a relationship matrix (free flow format, only the diagonal element and the lower triangle is present) - fast to export  
-    2. **dense**  -- free flow format with all pairwise relationship present - slow to export  
-    3. **matrix** -- pairwise relationship in a matrix format. - faster to export  
+    2. **matrix** -- pairwise relationship in a matrix format. - faster to export  
 
 
 ## Sequential explanation of how to implement vanRaden (2008) in R  
