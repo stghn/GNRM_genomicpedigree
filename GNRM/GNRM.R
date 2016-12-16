@@ -217,81 +217,26 @@ calc_gnrm <- function(genofile,genoformat,ana_type,AFREQ,ped_data,ped_option,out
   
   if(outputformat=="ASREML" & ped_option==F){
     cat('....... Output file preparation started ..........\n')
-    out <- matrix(c(0,0,0,0,0),1,5)  
-    for (i in 1:ncol(G)){
-      for (j in 1:ncol(G)){
-        if(j<=i){
-          value <- matrix(c(IID[i],IID[j],i,j,G[i,j]),1,5)
-          out <- rbind(out,value)
-        }
-      }
-      if(i %% itercheck==0){
-        cat(paste('... Output at animal ...',i,' ...out of a total of ...',length(IID),sep=''),' \n')
-      }
-    }
-    out <- out[-1,]
-    write.table(out,paste(outputname,".grm",sep=""),col.names=F,row.names=F,quote=F,sep="\t")
+      Glist <- as.data.frame(which(row(G)>=col(G),arr.ind=TRUE))
+      Glist$G <- G[lower.tri(G,diag=T)]
+      Glist <- Glist[,c(2,1,3)]
+      Glist <- Glist[order(Glist[,2],Glist[,1]),]
+      Glist <- Glist[,c(2,1,3)]
+    write.table(Glist,paste(outputname,".grm",sep=""),col.names=F,row.names=F,quote=F,sep="\t")
     cat(paste('....... Output file exported ',outputname,'.grm',' ..........\n',sep=''))
-    cat('+++++++++ output file columns ++++++++++\n')
-    cat(' originalID1  originalID2 recodedID1 recodedID2 G_values \n\n')
-  } 
-  else if(outputformat=="ASREML" & ped_option==T){
+  } else if(outputformat=="ASREML" & ped_option==T){
     cat('....... Output file preparation started ..........\n')
-    out <- matrix(c(0,0,0,0,0,0),1,6) 
-    for (i in 1:ncol(G)){
-      for (j in 1:ncol(G)){
-        if(j<=i){
-          value <- matrix(c(IID[i],IID[j],i,j,G[i,j],fullA[i,j]),1,6)
-          out <- rbind(out,value)
-        }
-      }
-      if(i %% itercheck==0){
-        cat(paste('... Output at animal ...',i,' ...out of a total of ...',length(IID),sep=''),' \n')
-      }
-    }
-    out <- out[-1,]
-    write.table(out,paste(outputname,".grm",sep=""),col.names=F,row.names=F,quote=F,sep="\t")
+      Glist <- as.data.frame(which(row(G)>=col(G),arr.ind=TRUE))
+      Glist$G <- G[lower.tri(G,diag=T)]
+      Glist$A <- fullA[lower.tri(fullA,diag=T)]
+      Glist <- Glist[,c(2,1,3,4)]
+      Glist <- Glist[order(Glist[,2],Glist[,1]),]
+      Glist <- Glist[,c(2,1,3,4)]
+    write.table(Glist,paste(outputname,".grm",sep=""),col.names=F,row.names=F,quote=F,sep="\t")
     cat(paste('....... Output file exported ',outputname,'.grm',' ..........\n',sep=''))
     cat('+++++++++ output file columns ++++++++++\n')
     cat(' originalID1  originalID2 recodedID1 recodedID2 G_values Ped_values \n\n')
   } 
-  
-  if(outputformat=="dense" & ped_option==F){
-    cat('....... Output file preparation started ..........\n')
-    out <- matrix(c(0,0,0,0,0),1,5)  
-    for (i in 1:ncol(G)){
-      for (j in 1:ncol(G)){
-        value <- matrix(c(IID[i],IID[j],i,j,G[i,j]),1,5)
-        out <- rbind(out,value)
-      }
-      if(i %% itercheck==0){
-        cat(paste('... Output at animal ...',i,' ...out of a total of ...',length(IID),sep=''),' \n')
-      }
-    }
-    out <- out[-1,]
-    write.table(out,paste(outputname,".grm",sep=""),col.names=F,row.names=F,quote=F,sep="\t")
-    cat(paste('....... Output file exported ',outputname,'.grm',' ..........\n',sep=''))
-    cat('+++++++++ output file columns ++++++++++\n')
-    cat(' originalID1  originalID2 recodedID1 recodedID2 G_values \n\n')
-  } 
-  else if(outputformat=="dense" & ped_option==T){
-    cat('....... Output file preparation started ..........\n')
-    out <- matrix(c(0,0,0,0,0,0),1,6)  
-    for (i in 1:ncol(G)){
-      for (j in 1:ncol(G)){
-        value <- matrix(c(IID[i],IID[j],i,j,G[i,j],fullA[i,j]),1,6)
-        out <- rbind(out,value)
-      }
-      if(i %% itercheck==0){
-        cat(paste('... Output at animal ...',i,' ...out of a total of ...',length(IID),sep=''),' \n')
-      }
-    }
-    out <- out[-1,]
-    write.table(out,paste(outputname,".grm",sep=""),col.names=F,row.names=F,quote=F,sep="\t")
-    cat(paste('....... Output file exported ',outputname,'.grm',' ..........\n',sep=''))
-    cat('+++++++++ output file columns ++++++++++\n')
-    cat(' originalID1  originalID2 recodedID1 recodedID2 G_values Ped_values \n\n')
-  }
   
   if(outputformat=="matrix" & ped_option==F){
     cat('....... Output file preparation started ..........\n')
@@ -299,8 +244,7 @@ calc_gnrm <- function(genofile,genoformat,ana_type,AFREQ,ped_data,ped_option,out
     rownames(G) <- IID
     write.table(G,paste(outputname,".grm",sep=""),col.names=T,row.names=F,quote=T,sep="\t")
     cat(paste('....... Output file exported ',outputname,'.grm',' ..........\n',sep=''))
-  } 
-  else if(outputformat=="matrix" & ped_option==T){
+  } else if(outputformat=="matrix" & ped_option==T){
     cat('....... Output file preparation started ..........\n')
     colnames(G) <- IID
     rownames(G) <- IID
@@ -309,7 +253,6 @@ calc_gnrm <- function(genofile,genoformat,ana_type,AFREQ,ped_data,ped_option,out
     cat(paste('....... Output file exported ',outputname,'.grm',' ..........\n',sep=''))
     cat(paste('....... Output file exported ',outputname,'.prm',' ..........\n',sep=''))
   }
-  
   
   if(plots==TRUE){
     plotname <-paste("Genomic_relationship_",outputname,".png",sep="")
@@ -326,37 +269,3 @@ calc_gnrm <- function(genofile,genoformat,ana_type,AFREQ,ped_data,ped_option,out
   }
   return(G)
 }
-
-#######   Reading the genotype file #########
-# Note : 1. PLEASE NOTE that only numeric allele coding are allowed (alleles -- 11/12/22 or genotypes -- 0/1/2)
-#        2. missing genotypes are allowed tp be NA (but they are replaced with average genotypic value for that loci)
-
-################################################################################################################
-#++++++++++++++++++++   argument    ++++++++++++++++++++++++#
-# 1. genofile       ===  Name of the genotype file: it can be an "external file" or "R-object"
-# 2. genoformat     ===  genotype file format. four (4) format types are allowed (ped,genotypes,Robj_ped,Robj_genotypes)
-# 3. outputformat   ===  three (3) output format types are allowed (ASREML,dense,matrix)
-# 4. outputname     === output name of final file. This will be the text file outputed to your current directory
-# 5. nIID           === number of animals in dataset, slightly higher value increase speed of reading genotype data
-################################################################################################################
-
-#+++++++++++++ Some specific explanation of Argument 2 and 3
-## explanation for argument 2
-# Allow for different file format
-# 1. "ped"  ----- PLINK ped file format, or linkage file format see PLINK
-#     format:   FamID ID sire dam sex pheno SNP1_allele1 SNP1_allele2 SNP2_allele1 SNP2_allele2 .........
-
-# 2. "genotypes" 
-#     format:   FamID ID sire dam sex pheno SNP1 SNP2 .........
-
-# 3 & 4. "Robj_ped or Robj_genotypes"
-#     These are R-object, for example if you already have imported the dataset in R .........
-#     Depending on the format, if it an R-object in "ped" style the use Robj_ped, else use Robj_genotypes
-#     format: Robj_ped  -- ID SNP1_allele1 SNP1_allele2 SNP2_allele1 SNP2_allele2 .....
-#     format: Robj_genotypes  -- ID SNP1 SNP2 .........
-
-##### explanation for argument 3
-# Three (3) output format are allowed
-# 1. ASREML == ASREML for a relationship matrix (free flow format, only the diagonal element and the lower triangle is present)
-# 2. dense  == free flow format with all pairwise relationship present
-# 3. matrix == pairwise relationship in a matrix format
